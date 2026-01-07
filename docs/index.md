@@ -17,7 +17,7 @@ PCAM-24 proposes a different foundation: replace time as the primary semantic co
 ### 2.1 Phase Space
 PCAM-24 defines a fixed, cyclic phase space:
 
-5243Phase \in \mathbb{Z}_{24} = \{0,1,\dots,23\}5243
+$$Phase \in \mathbb{Z}_{24} = \{0,1,\dots,23\}$$
 
 Phase advances discretely and wraps modulo 24.
 
@@ -31,7 +31,7 @@ An action is the atomic unit of interactive intent. Each action owns:
 * Deterministic transition rules
 
 ## 3. Phase Windows and Semantics
-A phase window is a named subset of the phase space  \subseteq \mathbb{Z}_{24}$.
+A phase window is a named subset of the phase space $W \subseteq \mathbb{Z}_{24}$.
 * **ACTIVE:** Phases where an attack deals damage.
 * **INVULN:** Phases where damage is negated.
 * **PARRY_PERFECT:** Phases where a parry succeeds.
