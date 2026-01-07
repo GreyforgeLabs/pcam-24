@@ -1,0 +1,74 @@
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .label { font-family: sans-serif; font-size: 14px; fill: #ffffff; }
+      .phase { font-family: monospace; font-size: 10px; fill: #cccccc; }
+      .outline { fill: none; stroke: #888888; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="600" fill="#111111"/>
+
+  <!-- Center -->
+  <circle cx="300" cy="300" r="20" fill="#ffffff"/>
+
+  <!-- Phase Segments -->
+  <!-- 24 segments, 15 degrees each -->
+  <!-- Colors represent common PCAM-24 windows -->
+
+  <!-- Anticipation (0–5) -->
+  <path d="M300 300 L300 40 A260 260 0 0 1 457 78 Z" fill="#4a90e2"/>
+  <!-- Commit (6–9) -->
+  <path d="M300 300 L457 78 A260 260 0 0 1 560 300 Z" fill="#f5a623"/>
+  <!-- Active (10–13) -->
+  <path d="M300 300 L560 300 A260 260 0 0 1 457 522 Z" fill="#d0021b"/>
+  <!-- Recovery (14–21) -->
+  <path d="M300 300 L457 522 A260 260 0 0 1 143 522 Z" fill="#7ed321"/>
+  <!-- Reset / Chain (22–23) -->
+  <path d="M300 300 L143 522 A260 260 0 0 1 300 40 Z" fill="#9013fe"/>
+
+  <!-- Outer Circle -->
+  <circle cx="300" cy="300" r="260" class="outline"/>
+
+  <!-- Labels -->
+  <text x="300" y="110" text-anchor="middle" class="label">ANTICIPATION</text>
+  <text x="490" y="300" text-anchor="middle" class="label">COMMIT</text>
+  <text x="300" y="520" text-anchor="middle" class="label">ACTIVE</text>
+  <text x="110" y="360" text-anchor="middle" class="label">RECOVERY</text>
+  <text x="180" y="140" text-anchor="middle" class="label">RESET</text>
+
+  <!-- Phase Numbers -->
+  <!-- Placed roughly around the ring -->
+  <g>
+    <text x="300" y="60" class="phase">0</text>
+    <text x="360" y="70" class="phase">1</text>
+    <text x="420" y="95" class="phase">2</text>
+    <text x="470" y="140" class="phase">3</text>
+    <text x="510" y="195" class="phase">4</text>
+    <text x="530" y="260" class="phase">5</text>
+    <text x="530" y="330" class="phase">6</text>
+    <text x="510" y="395" class="phase">7</text>
+    <text x="470" y="450" class="phase">8</text>
+    <text x="420" y="495" class="phase">9</text>
+    <text x="360" y="525" class="phase">10</text>
+    <text x="300" y="535" class="phase">11</text>
+    <text x="240" y="525" class="phase">12</text>
+    <text x="180" y="495" class="phase">13</text>
+    <text x="130" y="450" class="phase">14</text>
+    <text x="90" y="395" class="phase">15</text>
+    <text x="70" y="330" class="phase">16</text>
+    <text x="70" y="260" class="phase">17</text>
+    <text x="90" y="195" class="phase">18</text>
+    <text x="130" y="140" class="phase">19</text>
+    <text x="180" y="95" class="phase">20</text>
+    <text x="240" y="70" class="phase">21</text>
+    <text x="270" y="60" class="phase">22</text>
+    <text x="330" y="60" class="phase">23</text>
+  </g>
+
+  <!-- Title -->
+  <text x="300" y="300" text-anchor="middle" class="label" style="font-size:18px;">
+    PCAM-24 PHASE WHEEL
+  </text>
+</svg>

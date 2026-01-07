@@ -1,0 +1,1195 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Greyforge Labs">
+      
+      
+        <link rel="canonical" href="https://greyforgelabs.github.io/pcam-24/whitepaper/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../spec/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>PCAM-24 Whitepaper - PCAM-24 Specification</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pcam-24-a-phase-centric-action-model-for-deterministic-interactive-simulation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PCAM-24 Specification" class="md-header__button md-logo" aria-label="PCAM-24 Specification" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PCAM-24 Specification
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PCAM-24 Whitepaper
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  What is PCAM-24?
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  PCAM-24 Whitepaper
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../spec/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Formal Specification
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Designer Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../minimal-example/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Minimal Example
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../why-not-time/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Why not Time?
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../faq/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../LICENSE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PCAM-24 Specification" class="md-nav__button md-logo" aria-label="PCAM-24 Specification" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PCAM-24 Specification
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is PCAM-24?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PCAM-24 Whitepaper
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PCAM-24 Whitepaper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-core-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Core Concept
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Core Concept">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-phase-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Phase Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-windows-and-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Phase Windows and Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Phase Authority
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-action-lifecycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Action Lifecycles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cancels-transitions-and-buffering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Cancels, Transitions, and Buffering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-interaction-adjudication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Interaction Adjudication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-networking-and-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Networking and Determinism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-tooling-and-explainability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Tooling and Explainability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-benefits-and-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Benefits and Implications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Non-Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formal Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designer Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minimal-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Minimal Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../why-not-time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why not Time?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LICENSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-core-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Core Concept
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Core Concept">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-phase-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Phase Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-windows-and-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Phase Windows and Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Phase Authority
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-action-lifecycles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Action Lifecycles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cancels-transitions-and-buffering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Cancels, Transitions, and Buffering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-interaction-adjudication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Interaction Adjudication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-networking-and-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Networking and Determinism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-tooling-and-explainability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Tooling and Explainability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-benefits-and-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Benefits and Implications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Non-Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="pcam-24-a-phase-centric-action-model-for-deterministic-interactive-simulation">PCAM-24: A Phase-Centric Action Model for Deterministic Interactive Simulation</h1>
+<h2 id="abstract">Abstract</h2>
+<p>This paper introduces <strong>PCAM-24 (Phase-Centric Action Model)</strong>, a simulation model in which discrete phase—rather than continuous time—is the authoritative coordinate for action progression, interaction adjudication, and cross-system synchronization. PCAM-24 defines actions as cyclic phase processes within a fixed modular phase space and expresses all gameplay-relevant semantics (e.g., hit windows, invulnerability, cancels, transitions) as phase membership.</p>
+<p>By elevating phase to a first-class primitive, PCAM-24 eliminates timing inference between subsystems, simplifies deterministic networking, and provides a shared semantic language for animation, combat, AI, and tooling. The model is particularly suited to real-time interactive simulations where perceived fairness, explainability, and determinism are critical.</p>
+<hr />
+<h2 id="1-introduction">1. Introduction</h2>
+<p>Modern interactive simulations—especially games—coordinate multiple subsystems that each operate on their own notion of time. Animation systems advance clip time, combat systems evaluate frame-based windows, AI systems reason in ticks, and networking layers reconcile wall-clock deltas. While effective in practice, this fragmentation produces systemic problems:</p>
+<ul>
+<li>Desynchronization between animation and gameplay outcomes.</li>
+<li>Brittle timing logic expressed in floats or frame counts.</li>
+<li>Ambiguous interaction adjudication under latency.</li>
+<li>Difficulty explaining or debugging why a given outcome occurred.</li>
+</ul>
+<p>PCAM-24 proposes a different foundation: replace time as the primary semantic coordinate with <strong>discrete phase</strong>. Rather than asking <em>"when did something happen?"</em>, PCAM-24 asks <em>"what stage of the action is occurring?"</em></p>
+<h2 id="2-core-concept">2. Core Concept</h2>
+<h3 id="21-phase-space">2.1 Phase Space</h3>
+<p>PCAM-24 defines a fixed, cyclic phase space:</p>
+<div class="arithmatex">\[\text{Phase} \in \mathbb{Z}_{24} = \{0, 1, \dots, 23\}\]</div>
+<p>Phase advances discretely and wraps modulo 24. Phase progression is monotonic and integer-valued; partial phases and fractional authority are disallowed.</p>
+<p>The choice of 24 phases reflects a balance between expressive resolution and cognitive tractability. It provides sufficient granularity to model nuanced action stages while remaining small enough to reason about as a complete cycle.</p>
+<h3 id="22-actions">2.2 Actions</h3>
+<p>An <strong>action</strong> is the atomic unit of interactive intent (e.g., attack, dodge, parry, block). Each action owns:</p>
+<ul>
+<li>A current phase value.</li>
+<li>A phase progression rule.</li>
+<li>A set of named phase windows.</li>
+<li>Deterministic transition rules.</li>
+</ul>
+<p>An action is not measured in seconds. It progresses through semantic stages defined by phase.</p>
+<h2 id="3-phase-windows-and-semantics">3. Phase Windows and Semantics</h2>
+<p>A <strong>phase window</strong> is a named subset of the phase space. Formally, each window is a set:</p>
+<div class="arithmatex">\[W \subseteq \mathbb{Z}_{24}\]</div>
+<p>Examples include:</p>
+<ul>
+<li><strong>ACTIVE:</strong> Phases during which an attack can deal damage.</li>
+<li><strong>INVULN:</strong> Phases during which damage is negated.</li>
+<li><strong>PARRY_PERFECT:</strong> Phases during which a parry fully succeeds.</li>
+<li><strong>RECOVERY:</strong> Phases during which vulnerability or restrictions apply.</li>
+</ul>
+<p>All authoritative gameplay decisions are reduced to window membership tests. Time, frame count, or animation normalized time are never authoritative inputs.</p>
+<h2 id="4-phase-authority">4. Phase Authority</h2>
+<p>PCAM-24 enforces several non-negotiable axioms:</p>
+<ul>
+<li><strong>Phase is authoritative:</strong> Phase is the sole coordinate for ordering, gating, and adjudication of actions and interactions.</li>
+<li><strong>Discrete semantics:</strong> All gameplay-relevant logic must be expressible as phase membership or phase-gated transitions.</li>
+<li><strong>Monotonic progression:</strong> Phase advances monotonically on the cyclic ring. Rewinds are prohibited; corrections occur by snapping phase or restarting actions.</li>
+<li><strong>Subsystem subscription:</strong> Subsystems (animation, combat, AI, VFX, audio, UI) observe phase and windows but do not advance or reinterpret them.</li>
+<li><strong>Interaction resolution by phase:</strong> Cross-entity interactions are resolved exclusively through phase-defined rules and explicit precedence.</li>
+</ul>
+<h2 id="5-action-lifecycles">5. Action Lifecycles</h2>
+<p>PCAM-24 categorizes actions by lifecycle semantics:</p>
+<ul>
+<li><strong>Impulse actions</strong> (e.g., melee attack): Progress once through the phase cycle and terminate.</li>
+<li><strong>Sustained actions</strong> (e.g., block hold): Loop through phases while input is maintained.</li>
+<li><strong>Reactive actions</strong> (e.g., parry): Feature narrow success windows and defined failure recovery.</li>
+<li><strong>Evasive actions</strong> (e.g., dodge roll): Include invulnerability or mitigation windows and phase-driven movement.</li>
+</ul>
+<p>Each action must explicitly define what phase wrap means (termination, loop, or clamp), preventing ambiguous lifecycle behavior.</p>
+<h2 id="6-cancels-transitions-and-buffering">6. Cancels, Transitions, and Buffering</h2>
+<p>Action transitions—such as cancels, combos, or state changes—are phase-gated:</p>
+<ol>
+<li>Cancels are allowed only within defined windows.</li>
+<li>Inputs may be buffered and consumed deterministically when entering valid windows.</li>
+<li>If multiple transitions are eligible simultaneously, a deterministic priority rule resolves the outcome.</li>
+</ol>
+<p>This replaces ad-hoc frame windows and timing constants with inspectable, authorable phase logic.</p>
+<h2 id="7-interaction-adjudication">7. Interaction Adjudication</h2>
+<p>PCAM-24 requires explicit precedence for contested interactions. A canonical ordering is:</p>
+<ol>
+<li><strong>Evasion</strong> (e.g., invulnerability windows)</li>
+<li><strong>Perfect defense</strong> (e.g., parry)</li>
+<li><strong>Mitigating defense</strong> (e.g., block)</li>
+<li><strong>Hit</strong> (full effect)</li>
+</ol>
+<p>When an attack intersects a defender, the outcome is determined by the defender’s current action and phase windows—not by animation timing, render order, or wall-clock arrival.</p>
+<p>This makes outcomes deterministic, explainable, and consistent under network conditions.</p>
+<h2 id="8-networking-and-determinism">8. Networking and Determinism</h2>
+<p>PCAM-24 is inherently network-friendly because it replicates <strong>phase</strong>, not time.</p>
+<ul>
+<li>Network replication transmits action identifiers, phase values, and any start-captured parameters.</li>
+<li>Clients may predict locally by advancing phase using the same rules.</li>
+<li>Reconciliation is performed by snapping phase to authoritative values, optionally with bounded grace policies expressed in phase units.</li>
+</ul>
+<p>No reconstruction of exact elapsed time is required.</p>
+<h2 id="9-tooling-and-explainability">9. Tooling and Explainability</h2>
+<p>A PCAM-24 system is only viable if its semantics are visible. Tooling must allow inspection of:</p>
+<ul>
+<li>Current action and phase.</li>
+<li>Active phase windows.</li>
+<li>Eligible transitions and their conditions.</li>
+<li>Recent interaction outcomes.</li>
+</ul>
+<p>By making phase explicit, PCAM-24 transforms timing bugs from opaque artifacts into inspectable state.</p>
+<h2 id="10-benefits-and-implications">10. Benefits and Implications</h2>
+<p>PCAM-24 offers several advantages over time-centric models:</p>
+<ul>
+<li><strong>Consistency:</strong> Animation, combat, AI, and networking share a single semantic clock.</li>
+<li><strong>Determinism:</strong> Discrete phase eliminates floating-point drift and ambiguous comparisons.</li>
+<li><strong>Explainability:</strong> Outcomes can be justified directly by phase membership.</li>
+<li><strong>Authorability:</strong> Designers reason in semantic stages rather than frames or milliseconds.</li>
+<li><strong>Extensibility:</strong> New systems subscribe to phase without redefining timing logic.</li>
+</ul>
+<h2 id="11-non-goals">11. Non-Goals</h2>
+<p>PCAM-24 does not attempt to:</p>
+<ul>
+<li>Replace continuous physics solvers.</li>
+<li>Reform civil or real-world timekeeping.</li>
+<li>Mandate a specific engine or update loop.</li>
+<li>Eliminate all uses of real time in rendering or presentation.</li>
+</ul>
+<p>It defines only what is authoritative for <strong>interaction semantics</strong>.</p>
+<h2 id="12-conclusion">12. Conclusion</h2>
+<p>PCAM-24 reframes interactive simulation timing from a question of <em>when</em> to a question of <em>what stage</em>. By elevating discrete phase to a first-class primitive, it provides a unifying semantic substrate across subsystems that are traditionally decoupled and inference-driven. The result is a model that is deterministic, inspectable, and aligned with how players perceive actions—not as durations, but as stages of intent.</p>
+<p>PCAM-24 is not an optimization of existing timing systems. It is a replacement of their underlying assumption.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Greyforge Labs
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
