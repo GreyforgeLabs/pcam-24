@@ -1,0 +1,403 @@
+# ==============================================================================
+# PCAM-24: Phase-Centric Action Model - Data Standard v1.0
+# ==============================================================================
+# Greyforge Labs - Universal Combat Definition Schema
+#
+# PURPOSE:
+# This file defines the canonical data format for describing combat actions
+# in a deterministic, frame-rate-independent manner. By replacing continuous
+# time with discrete phase segments, we guarantee reproducible outcomes across
+# all platforms and network conditions.
+#
+# DESIGN PHILOSOPHY:
+# - Integers only: No floating-point ambiguity in timing windows
+# - Declarative logic: The data describes WHAT happens, not HOW to implement it
+# - Engine-agnostic: No references to specific game engines or frameworks
+# ==============================================================================
+
+
+# ==============================================================================
+# SECTION 1: GLOBAL CONSTANTS
+# ==============================================================================
+# These values are immutable and define the fundamental parameters of the
+# PCAM-24 system. All action definitions reference these constants.
+
+global:
+  # ---------------------------------------------------------------------------
+  # PHASE CYCLE
+  # ---------------------------------------------------------------------------
+  # The Phase Wheel is the core timing mechanism. Instead of measuring actions
+  # in milliseconds (which vary with frame rate), we divide each action into
+  # exactly 24 discrete segments. This number was chosen because:
+  #   - 24 is highly divisible (by 1,2,3,4,6,8,12,24), enabling clean window math
+  #   - Maps naturally to common frame rates (24fps film, 60fps/2.5, 120fps/5)
+  #   - Provides sufficient granularity for tight timing windows
+  phase_cycle:
+    total_segments: 24          # The wheel has exactly 24 phases (0-23)
+    min_phase: 0                # First valid phase index
+    max_phase: 23               # Last valid phase index (inclusive)
+    
+  # ---------------------------------------------------------------------------
+  # FRAME LOCK
+  # ---------------------------------------------------------------------------
+  # Defines how the simulation maps real-time to phase advancement.
+  # The engine advances the phase counter at this fixed rate, regardless
+  # of rendering frame rate. This ensures determinism across all hardware.
+  frame_lock:
+    simulation_rate_hz: 60      # Physics/logic updates per second
+    phases_per_second: 24       # One complete action cycle = 1 second at default
+    phase_duration_ms: 41.67    # Reference only (1000 / 24) - DO NOT USE FOR LOGIC
+
+
+# ==============================================================================
+# SECTION 2: ACTION DEFINITION SCHEMA
+# ==============================================================================
+# This section defines the reusable template for combat actions. Every move
+# in the game (punch, kick, dodge, parry) follows this exact structure.
+#
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║  CRITICAL VALIDATION RULE:                                                 ║
+# ║  Phase windows MUST be contiguous and non-overlapping.                    ║
+# ║  The "active" window CANNOT overlap with "recovery".                      ║
+# ║  All phases 0-23 must be accounted for exactly once across all windows.  ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+action_schema:
+  # ---------------------------------------------------------------------------
+  # METADATA
+  # ---------------------------------------------------------------------------
+  # Human-readable identification and categorization.
+  metadata:
+    id: string                  # Unique machine-readable identifier (e.g., "ATK_HEAVY_PUNCH")
+    name: string                # Display name (e.g., "Heavy Punch")
+    description: string         # Tooltip/documentation text
+    version: string             # Schema version this action conforms to (e.g., "1.0")
+
+  # ---------------------------------------------------------------------------
+  # PHASE MAP
+  # ---------------------------------------------------------------------------
+  # The heart of PCAM-24: defines what the action is DOING at each phase.
+  # Windows are specified by their start and end phases (inclusive).
+  #
+  # WINDOW TYPES:
+  #   - anticipation: Wind-up frames, action can be canceled, vulnerable
+  #   - commit: Point of no return, cannot cancel, may have armor
+  #   - active: The "hitbox is live" window, deals damage on contact
+  #   - recovery: Cool-down frames, vulnerable, cannot act
+  #   - reset: Final frames where combo input is accepted
+  phase_map:
+    anticipation:
+      start_phase: integer      # First phase of wind-up (typically 0)
+      end_phase: integer        # Last phase of wind-up (inclusive)
+      cancelable: boolean       # Can player cancel into another action?
+      
+    commit:
+      start_phase: integer      # First phase of commitment
+      end_phase: integer        # Last phase before active window
+      armor_active: boolean     # Does this window grant hit armor?
+      
+    active:
+      start_phase: integer      # First phase where hitbox deals damage
+      end_phase: integer        # Last phase of damage window (inclusive)
+      # NOTE: This is the ONLY window where damage/effects apply on contact
+      
+    recovery:
+      start_phase: integer      # First phase of recovery (after active)
+      end_phase: integer        # Last phase of vulnerability
+      # WARNING: Must start AFTER active.end_phase (no overlap allowed)
+      
+    reset:
+      start_phase: integer      # First phase where combo input is buffered
+      end_phase: integer        # Should typically be 23 (end of cycle)
+      combo_window: boolean     # Is chaining into next action allowed?
+
+  # ---------------------------------------------------------------------------
+  # ATTRIBUTES
+  # ---------------------------------------------------------------------------
+  # Numeric values that define the action's gameplay effect.
+  # All duration-like values are expressed in PHASES, not milliseconds.
+  attributes:
+    damage:
+      base_value: integer       # Raw damage dealt during active window
+      chip_damage: integer      # Damage dealt through block (0 = no chip)
+      
+    stun:
+      hit_stun: integer         # Phases opponent is locked in hit reaction
+      block_stun: integer       # Phases opponent is locked if they block
+      
+    pushback:
+      on_hit: integer           # Distance units pushed on successful hit
+      on_block: integer         # Distance units pushed when blocked
+      
+    meter:
+      gain_on_hit: integer      # Resource gained when action lands
+      gain_on_whiff: integer    # Resource gained even if action misses
+      cost: integer             # Resource consumed to perform action (0 = free)
+
+  # ---------------------------------------------------------------------------
+  # TAGS
+  # ---------------------------------------------------------------------------
+  # Categorical labels used by the Interaction Matrix for resolution logic.
+  # These are enums with predefined valid values.
+  tags:
+    weight_class:
+      # Determines priority in trades. Heavier attacks beat lighter ones.
+      # Valid values: LIGHT | MEDIUM | HEAVY | SUPER
+      value: enum
+      
+    height:
+      # Vertical targeting. Determines what stances/crouches avoid the attack.
+      # Valid values: HIGH | MID | LOW | OVERHEAD | UNBLOCKABLE
+      value: enum
+      
+    type:
+      # Fundamental action category for system-level rules.
+      # Valid values: STRIKE | THROW | PROJECTILE | SPECIAL | SUPER
+      value: enum
+      
+    properties:
+      # Boolean flags for special behaviors.
+      # These are checked by the engine for edge-case handling.
+      is_invincible: boolean    # Ignores incoming damage during active
+      is_armored: boolean       # Absorbs one hit without interruption
+      is_grab: boolean          # Uses throw tech rules instead of block
+      is_reversal: boolean      # Can be performed during block stun
+
+
+# ==============================================================================
+# SECTION 3: INTERACTION MATRIX
+# ==============================================================================
+# The "Judge" - defines how simultaneous/overlapping actions are resolved.
+# This is a declarative priority system evaluated top-to-bottom.
+#
+# When two actions collide, the engine walks this priority list until
+# a decisive winner is found. If all priorities tie, both actions trade.
+
+interaction_matrix:
+  # ---------------------------------------------------------------------------
+  # RESOLUTION PRIORITY ORDER
+  # ---------------------------------------------------------------------------
+  # The engine evaluates these rules in strict order. The first rule that
+  # produces a winner terminates the evaluation.
+  
+  priority_order:
+    # -------------------------------------------------------------------------
+    # PRIORITY 1: PHASE STATE
+    # -------------------------------------------------------------------------
+    # The most fundamental rule: what phase window is each action in?
+    # An action in its "active" window beats one still in "startup/anticipation".
+    - priority: 1
+      name: "Phase State Resolution"
+      description: >
+        Compare the current phase window of each action.
+        An action in ACTIVE state defeats an action in ANTICIPATION or COMMIT.
+        An action in ACTIVE defeats an action in RECOVERY.
+        If both are in the same state, proceed to next priority.
+      resolution_table:
+        ACTIVE_vs_ANTICIPATION: "ACTIVE_WINS"
+        ACTIVE_vs_COMMIT: "ACTIVE_WINS"
+        ACTIVE_vs_RECOVERY: "ACTIVE_WINS"
+        ACTIVE_vs_ACTIVE: "CHECK_NEXT_PRIORITY"
+        ANTICIPATION_vs_ANTICIPATION: "CHECK_NEXT_PRIORITY"
+        # Symmetric cases are implied (swap sides for reverse)
+        
+    # -------------------------------------------------------------------------
+    # PRIORITY 2: WEIGHT CLASS
+    # -------------------------------------------------------------------------
+    # When both actions are in the same phase state, heavier attacks win.
+    # This creates a "rock-paper-scissors" meta where heavies beat lights,
+    # but lights are faster (reach active phase sooner).
+    - priority: 2
+      name: "Weight Class Resolution"
+      description: >
+        Compare the weight_class tag of each action.
+        Heavier weight classes defeat lighter ones in direct trades.
+        SUPER > HEAVY > MEDIUM > LIGHT.
+        If equal weight, proceed to next priority.
+      resolution_table:
+        SUPER_vs_HEAVY: "SUPER_WINS"
+        SUPER_vs_MEDIUM: "SUPER_WINS"
+        SUPER_vs_LIGHT: "SUPER_WINS"
+        HEAVY_vs_MEDIUM: "HEAVY_WINS"
+        HEAVY_vs_LIGHT: "HEAVY_WINS"
+        MEDIUM_vs_LIGHT: "MEDIUM_WINS"
+        SAME_WEIGHT: "CHECK_NEXT_PRIORITY"
+        
+    # -------------------------------------------------------------------------
+    # PRIORITY 3: PHASE PRECEDENCE
+    # -------------------------------------------------------------------------
+    # The final tiebreaker: who entered their current phase window first?
+    # This rewards players who commit to their action earlier.
+    - priority: 3
+      name: "Phase Precedence Resolution"
+      description: >
+        Compare when each action entered its current phase window.
+        The action that transitioned into ACTIVE state first wins.
+        This is tracked as a monotonic counter by the engine.
+        If both entered on the exact same simulation tick, result is TRADE.
+      resolution_logic:
+        compare: "phase_entry_timestamp"
+        lower_wins: true        # Earlier timestamp = entered first = wins
+        tie_result: "TRADE"     # Both deal damage simultaneously
+
+  # ---------------------------------------------------------------------------
+  # SPECIAL CASE OVERRIDES
+  # ---------------------------------------------------------------------------
+  # Some interactions bypass the standard priority chain entirely.
+  # These are checked BEFORE the priority order is evaluated.
+  
+  special_cases:
+    - name: "Invincibility Override"
+      condition: "defender.properties.is_invincible == true"
+      result: "ATTACKER_WHIFFS"
+      description: "Invincible frames completely negate incoming attacks"
+      
+    - name: "Throw vs Strike"
+      condition: "attacker.type == THROW && defender.type == STRIKE"
+      result: "STRIKE_WINS"
+      description: "Strikes beat throws (but throws beat block)"
+      
+    - name: "Armor Absorption"
+      condition: "defender.properties.is_armored == true"
+      result: "DEFENDER_ABSORBS"
+      description: "Armored action absorbs hit but continues; attacker still recovers"
+
+
+# ==============================================================================
+# SECTION 4: EXAMPLE ACTION DEFINITION
+# ==============================================================================
+# A complete, valid action definition demonstrating proper schema usage.
+# This "Heavy Punch" can be used as a reference implementation.
+
+example_actions:
+  - metadata:
+      id: "ATK_HEAVY_PUNCH"
+      name: "Heavy Punch"
+      description: "A powerful straight punch with significant wind-up."
+      version: "1.0"
+      
+    phase_map:
+      anticipation:
+        start_phase: 0
+        end_phase: 5            # 6 phases of wind-up (0,1,2,3,4,5)
+        cancelable: true
+      commit:
+        start_phase: 6
+        end_phase: 9            # 4 phases of commitment (6,7,8,9)
+        armor_active: false
+      active:
+        start_phase: 10
+        end_phase: 13           # 4 phases of active hitbox (10,11,12,13)
+      recovery:
+        start_phase: 14
+        end_phase: 21           # 8 phases of recovery (14-21)
+      reset:
+        start_phase: 22
+        end_phase: 23           # 2 phases for combo buffer (22,23)
+        combo_window: true
+        
+    attributes:
+      damage:
+        base_value: 80
+        chip_damage: 8
+      stun:
+        hit_stun: 12            # 12 phases = half a second at default rate
+        block_stun: 8
+      pushback:
+        on_hit: 3
+        on_block: 2
+      meter:
+        gain_on_hit: 15
+        gain_on_whiff: 5
+        cost: 0
+        
+    tags:
+      weight_class:
+        value: HEAVY
+      height:
+        value: MID
+      type:
+        value: STRIKE
+      properties:
+        is_invincible: false
+        is_armored: false
+        is_grab: false
+        is_reversal: false
+
+  # Additional example: Light Jab for comparison
+  - metadata:
+      id: "ATK_LIGHT_JAB"
+      name: "Light Jab"
+      description: "A quick jab. Low damage but fast recovery."
+      version: "1.0"
+      
+    phase_map:
+      anticipation:
+        start_phase: 0
+        end_phase: 1            # Only 2 phases of wind-up (very fast)
+        cancelable: true
+      commit:
+        start_phase: 2
+        end_phase: 3            # 2 phases of commitment
+        armor_active: false
+      active:
+        start_phase: 4
+        end_phase: 6            # 3 phases of active hitbox
+      recovery:
+        start_phase: 7
+        end_phase: 15           # 9 phases of recovery
+      reset:
+        start_phase: 16
+        end_phase: 23           # Long combo window
+        combo_window: true
+        
+    attributes:
+      damage:
+        base_value: 20
+        chip_damage: 2
+      stun:
+        hit_stun: 6
+        block_stun: 4
+      pushback:
+        on_hit: 1
+        on_block: 1
+      meter:
+        gain_on_hit: 5
+        gain_on_whiff: 2
+        cost: 0
+        
+    tags:
+      weight_class:
+        value: LIGHT
+      height:
+        value: HIGH
+      type:
+        value: STRIKE
+      properties:
+        is_invincible: false
+        is_armored: false
+        is_grab: false
+        is_reversal: true       # Can be used as a reversal on wakeup
+
+
+# ==============================================================================
+# SCHEMA VALIDATION NOTES
+# ==============================================================================
+# When parsing this file, engines MUST validate:
+#
+# 1. PHASE COVERAGE: All windows must sum to exactly phases 0-23 with no gaps
+#    Formula: For each action, verify that:
+#    anticipation.end + 1 == commit.start
+#    commit.end + 1 == active.start
+#    active.end + 1 == recovery.start  (CRITICAL: NO OVERLAP)
+#    recovery.end + 1 == reset.start (if reset exists) OR recovery.end == 23
+#
+# 2. PHASE BOUNDS: All phase values must be in range [0, 23]
+#
+# 3. ENUM VALUES: Tags must use only the predefined enum values listed above
+#
+# 4. INTEGER ONLY: All phase and attribute values must be integers, not floats
+#
+# ==============================================================================
+# END OF PCAM-24 DATA STANDARD v1.0
+# ==============================================================================

@@ -4,6 +4,9 @@
 !!! quote "Abstract"
     This paper introduces **PCAM-24**, a simulation model in which discrete phase—rather than continuous time—is the authoritative coordinate for action progression. By elevating phase to a first-class primitive, PCAM-24 eliminates timing inference between subsystems, simplifies deterministic networking, and provides a shared semantic language for animation, combat, and AI.
 
+!!! info "📄 YAML Data Standard v1.0 Available"
+    Ready to implement PCAM-24? See the **[YAML Data Standard](yaml-standard.md)** for the engine-agnostic schema that defines combat actions, phase windows, and interaction resolution.
+
 ## 1. Introduction
 Modern interactive simulations—especially games—coordinate multiple subsystems that each operate on their own notion of time. Animation advances clip time, combat evaluates frame-based windows, and networking reconciles wall-clock deltas. This fragmentation produces:
 * Desynchronization between animation and gameplay

@@ -26,9 +26,11 @@ nav:
   - What is PCAM-24?: index.md
   - PCAM-24 Whitepaper: whitepaper.md
   - Formal Specification: spec.md
+  - YAML Data Standard: yaml-standard.md
   - Designer Guide: guide.md
   - Minimal Example: minimal-example.md
   - Why not Time?: why-not-time.md
   - FAQ: faq.md
   - License: LICENSE.md
   - Audit: audit.md
+
